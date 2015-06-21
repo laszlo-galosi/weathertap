@@ -5,6 +5,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="snack_tap_place">Tap  on a town to see its weather report</string>
+    <string name="snack_tap_place">Tap  on a place for its  weather report.</string>
+    <string name="snack_no_location_service">Cannot connect to location service.</string>
     <string name="snack_action_ok">Ok</string>
+    <string name="snack_action_retry">Retry</string>
 </resources>
