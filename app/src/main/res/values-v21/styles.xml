@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <!-- Main theme colors -->
@@ -11,17 +11,21 @@
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:statusBarColor">@color/primary_dark</item>
-        <!-- Custom shadow overlay for toolbar shadow from Google I/O app -->
-        <!--<item name="android:windowContentOverlay">@drawable/bottom_shadow</item>-->
     </style>
 
     <style name="MyFab">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginTop">0dp</item>
-        <item name="android:layout_marginRight">8dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:elevation">4dp</item>
+        <!--<item name="android:layout_marginBottom">12dp</item>-->
+        <!--<item name="android:layout_marginRight">12dp</item>-->
     </style>
 
+    <style name="MyToolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="MyViewArea"></style>
 </resources>

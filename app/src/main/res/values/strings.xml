@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Weather Where</string>
 
+    <string name="google_maps_key">AIzaSyBT4r2e8YPunZi2tq6KiJSyRJyezVdCxfs</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="snack_tap_place">Tap  on a town to see its weather report</string>
+    <string name="snack_action_ok">Ok</string>
 </resources>

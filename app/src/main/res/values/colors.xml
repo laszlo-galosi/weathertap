@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_et">#FAFAFA</color>
+    <color name="action_text">#ffffff</color>
+    <color name="et_hint">#ff7c8896</color>
+    <color name="bg_btn">#fffff5c6</color>
+    <color name="primary">#00BCD4</color>
+    <color name="primary_dark">#0097A7</color>
+    <color name="accent">#283593</color>
+    <color name="secondary">#B2EBF2</color>
+    <color name="accent_dark">#1A237E</color>
+</resources>
