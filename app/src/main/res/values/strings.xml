@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Weather Where</string>
 
-    <string name="google_maps_key">AIzaSyBT4r2e8YPunZi2tq6KiJSyRJyezVdCxfs</string>
+    <string name="google_maps_key" translatable="false">AIzaSyBT4r2e8YPunZi2tq6KiJSyRJyezVdCxfs</string>
+    <string name="open_weather_maps_apikey" translateable="false">df54ad44e43229dd5d2fea7fd95cafc6</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
