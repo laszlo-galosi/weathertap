@@ -8,4 +8,5 @@
     <color name="accent">#283593</color>
     <color name="secondary">#B2EBF2</color>
     <color name="accent_dark">#1A237E</color>
+    <color name="snack_warning">#fffff05b</color>
 </resources>

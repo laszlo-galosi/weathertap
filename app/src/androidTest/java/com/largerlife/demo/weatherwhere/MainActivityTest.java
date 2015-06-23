@@ -25,7 +25,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void MyLocationButoon_ShouldShowMyLocation() {
+    public void MyLocationButoon_ShouldBeClickabble() {
         onView(withId(R.id.fab)).perform();
     }
 }

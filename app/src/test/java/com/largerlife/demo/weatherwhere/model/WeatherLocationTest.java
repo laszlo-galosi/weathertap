@@ -6,6 +6,12 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_HUMIDITY;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_PRESSURE;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_TEMP;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_WIND_SPEED;
+
+
 /**
  * Created by LargerLife on 22/06/15.
  */
@@ -17,7 +23,7 @@ public class WeatherLocationTest extends TestCase {
     @BeforeClass
     public void setUp() throws Exception {
         super.setUp();
-        WeatherLocation.setUnitsIn(WeatherLocation.UNITS_METRIC);
+        WeatherLocation.setUnitsIn(Constants.UNITS_METRIC);
     }
 
     @Test
@@ -59,14 +65,14 @@ public class WeatherLocationTest extends TestCase {
 
     @Test
     public void test_GetTemperature() throws Exception {
-        double actual = WeatherLocation.getTemperature(293.778d);
-        assertEquals("293.78 C", WeatherLocation.getFormattedTemperature(actual));
+        double actual = WeatherLocation.getUnitsIn(293.778d, PARAM_TEMP);
+        assertTrue(293.78d == actual);
     }
 
     @Test
     public void test_GetSpeed() throws Exception {
-        double actual = WeatherLocation.getSpeed(29.736d);
-        assertEquals("107.05 km/h", WeatherLocation.getFormattedSpeed(actual));
+        double actual = WeatherLocation.getUnitsIn(29.736d, PARAM_WIND_SPEED);
+        assertTrue(107.05d == actual);
     }
 
     @Test
@@ -76,9 +82,11 @@ public class WeatherLocationTest extends TestCase {
         assertEquals("Tardos", result.locationName);
         assertTrue(result.coord.latitude == 47.661919d);
         assertTrue(result.coord.longitude == 18.44416d);
-        assertTrue(result.temperature == WeatherLocation.getTemperature(293.778d));
-        assertTrue(result.minTemperature == WeatherLocation.getTemperature(293.778d));
-        assertTrue(result.maxTemperatue == WeatherLocation.getTemperature(293.778d));
+        assertTrue(result.temperature == WeatherLocation.getUnitsIn(293.778d, PARAM_TEMP));
+        assertTrue(result.minTemperature == WeatherLocation.getUnitsIn(293.778d, PARAM_TEMP));
+        assertTrue(result.maxTemperatue == WeatherLocation.getUnitsIn(293.778d, PARAM_TEMP));
+        assertTrue(result.pressure == WeatherLocation.getUnitsIn(1008.59d, PARAM_PRESSURE));
+        assertTrue(result.humidity == WeatherLocation.getUnitsIn(66.0d, PARAM_HUMIDITY));
         assertTrue(result.windSpeed == 4.66d);
         assertEquals("Clouds", result.weatherMain);
         assertEquals("few clouds", result.weatherDescription);
@@ -89,9 +97,11 @@ public class WeatherLocationTest extends TestCase {
         assertEquals("Neszmely", result.locationName);
         assertTrue(result.coord.latitude == 47.735851d);
         assertTrue(result.coord.longitude == 18.359659d);
-        assertTrue(result.temperature == WeatherLocation.getTemperature(293.178d));
-        assertTrue(result.minTemperature == WeatherLocation.getTemperature(293.178d));
-        assertTrue(result.maxTemperatue == WeatherLocation.getTemperature(293.178d));
+        assertTrue(result.temperature == WeatherLocation.getUnitsIn(293.178d, PARAM_TEMP));
+        assertTrue(result.minTemperature == WeatherLocation.getUnitsIn(293.178d, PARAM_TEMP));
+        assertTrue(result.maxTemperatue == WeatherLocation.getUnitsIn(293.178d, PARAM_TEMP));
+        assertTrue(result.pressure == WeatherLocation.getUnitsIn(1007.86d, PARAM_PRESSURE));
+        assertTrue(result.humidity == WeatherLocation.getUnitsIn(65.0d, PARAM_HUMIDITY));
         assertTrue(result.windSpeed == 4.81d);
         assertEquals("Clouds", result.weatherMain);
         assertEquals("scattered clouds", result.weatherDescription);

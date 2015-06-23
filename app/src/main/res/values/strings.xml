@@ -1,13 +1,15 @@
 <resources>
-    <string name="app_name">Weather Where</string>
+    <string name="app_name">Weather Tap</string>
 
     <string name="google_maps_key" translatable="false">AIzaSyBT4r2e8YPunZi2tq6KiJSyRJyezVdCxfs</string>
-    <string name="open_weather_maps_apikey" translateable="false">df54ad44e43229dd5d2fea7fd95cafc6</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="snack_tap_place">Tap  on a place for its  weather report.</string>
-    <string name="snack_no_location_service">Cannot connect to location service.</string>
+    <string name="open_weather_maps_apikey" translateable="false" translatable="false">df54ad44e43229dd5d2fea7fd95cafc6</string>
     <string name="snack_action_ok">Ok</string>
     <string name="snack_action_retry">Retry</string>
+    <string name="snack_general_error">Internal error</string>
+    <string name="snack_error_fetch_data">Network error, check the settings</string>
+    <string name="snack_no_location_service">Cannot retrieve GPS data</string>
+    <string name="snack_tap_place">Touch the map to show weather data</string>
+    <string name="snack_error_check_internet">Check internet connection.</string>
+    <string name="snack_check_location_settings">Check location settings</string>
+    <string name="temperature">Temperature</string>
 </resources>

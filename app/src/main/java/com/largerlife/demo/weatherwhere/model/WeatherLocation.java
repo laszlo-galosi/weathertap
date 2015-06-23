@@ -1,5 +1,8 @@
 package com.largerlife.demo.weatherwhere.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -7,33 +10,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_HUMIDITY;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_PRESSURE;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_TEMP;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_TEMP_MAX;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_TEMP_MIN;
+import static com.largerlife.demo.weatherwhere.model.Constants.PARAM_WIND_SPEED;
+
 
 /**
- * Created by LargerLife on 22/06/15.
+ * Data model containing the OpenWeatherApi response data.
  */
-public class WeatherLocation {
-    public static final String PARAM_RESULT_LIST = "list";
+public class WeatherLocation implements Parcelable {
 
-    public static final String PARAM_ID = "id";
-    public static final String PARAM_LOCATION_NAME = "name";
-    public static final String PARAM_LATITUDE = "coord:lat";
-    public static final String PARAM_LONGITUDE = "coord:lon";
-    public static final String PARAM_TEMP = "main:temp";
-    public static final String PARAM_TEMP_MIN = "main:temp_min";
-    public static final String PARAM_TEMP_MAX = "main:temp_max";
-    public static final String PARAM_WIND_SPEED = "wind:speed";
-    public static final String PARAM_WEATHER_MAIN = "weather:main";
-    public static final String PARAM_WEATHER_DESC = "weather:description";
-
-    public static final String PARAM_WEATHER_ICON = "weather:icon";
-    static final String UNITS_METRIC = "metric";
-
-    static final String UNITS_IMPERIAL = "imperial";
-    static final int TEMP_CELSIUS = 0;
-    static final int TEMP_FAHRENHEIT = 1;
-    static final int TEMP_KELVIN = 2;
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
     private static String unitsIn;
 
@@ -43,6 +33,8 @@ public class WeatherLocation {
     double temperature;
     double minTemperature;
     double maxTemperatue;
+    double pressure;
+    double humidity;
     double windSpeed;
     String weatherMain;
     String weatherIcon;
@@ -55,10 +47,16 @@ public class WeatherLocation {
         this.temperature = b.temperature;
         this.minTemperature = b.minTemperature;
         this.maxTemperatue = b.maxTemperature;
+        this.pressure = b.pressure;
+        this.humidity = b.humidity;
         this.windSpeed = b.windSpeed;
         this.weatherMain = b.weatherMain;
         this.weatherIcon = b.weatherIcon;
         this.weatherDescription = b.weatherDescription;
+    }
+
+    private WeatherLocation(Parcel in) {
+        this(new Builder().builder(in));
     }
 
     public int getUuid() {
@@ -81,8 +79,26 @@ public class WeatherLocation {
         return minTemperature;
     }
 
-    public double getMaxTemperatue() {
+    public double getMaxTemperature() {
         return maxTemperatue;
+    }
+
+    public double getPressure() {
+        return pressure;
+    }
+
+    public WeatherLocation setPressure(double pressure) {
+        this.pressure = pressure;
+        return this;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public WeatherLocation setHumidity(double humidity) {
+        this.humidity = humidity;
+        return this;
     }
 
     public double getWindSpeed() {
@@ -106,13 +122,13 @@ public class WeatherLocation {
      *
      * @param units units query parameter.
      * @return the correct param value
-     * @throws IllegalArgumentException only {@link #UNITS_METRIC} supported yet
+     * @throws IllegalArgumentException only {@link Constants#UNITS_METRIC} supported yet
      */
     public static String setUnitsIn(final String units) throws IllegalArgumentException {
-        if (!units.equals(UNITS_METRIC)) {
+        if (!units.equals(Constants.UNITS_METRIC)) {
             throw new IllegalArgumentException(
                     String.format("%s mode not supported yet.Please, set to %s only.",
-                            units, UNITS_METRIC));
+                            units, Constants.UNITS_METRIC));
         }
         WeatherLocation.unitsIn = units;
         return WeatherLocation.unitsIn;
@@ -139,60 +155,56 @@ public class WeatherLocation {
         return new WeatherLocation.Builder();
     }
 
-
     /**
-     * Returns a truncated value of the given value only supported in metric units.
-     *
-     * @param rawValue the raw value from the json string in metric unit.
-     * @return the computed temperature value
-     */
-    public static double getTemperature(double rawValue) throws IllegalArgumentException {
-        if (WeatherLocation.unitsIn == null || unitsIn.equals(UNITS_IMPERIAL)) {
-            throw new IllegalArgumentException(
-                    String.format("%s mode not supported yet or not set.Please, set to %s only.",
-                            unitsIn, UNITS_METRIC));
-        }
-        double tempValue = rawValue;
-        Double truncatedDouble = new BigDecimal(tempValue).setScale(2, BigDecimal.ROUND_HALF_UP)
-                .doubleValue();
-        return truncatedDouble;
-    }
-
-    /**
-     * Returns a truncated and converted km/h
-     * value of the given speed in m/s value only supported in metric units in km/h.
+     * Returns a truncated and converted double
+     * value of the given para in m/s value only supported in metric units in km/h.
      *
      * @param rawValue the raw value from the json string in m/sec metric unit.
      * @return the computed speed value converted to km/h
      */
-    public static double getSpeed(double rawValue) throws IllegalArgumentException {
-        if (WeatherLocation.unitsIn == null || unitsIn.equals(UNITS_IMPERIAL)) {
+    public static double getUnitsIn(double rawValue, String paramName) throws IllegalArgumentException {
+        if (WeatherLocation.unitsIn == null || unitsIn.equals(Constants.UNITS_IMPERIAL)) {
             throw new IllegalArgumentException(
                     String.format("%s mode not supported yet or not set.Please, set to %s only.",
-                            unitsIn, UNITS_METRIC));
+                            unitsIn, Constants.UNITS_METRIC));
         }
-        double kmPerHourValue = (rawValue * 18) / 5;
-        Double truncatedDouble = new BigDecimal(kmPerHourValue).setScale(2, BigDecimal.ROUND_HALF_UP)
+        double converted = rawValue;
+        if (paramName.equals(PARAM_WIND_SPEED)) {
+            converted = (rawValue * 18) / 5;
+        }
+        Double truncatedDouble = new BigDecimal(converted).setScale(2, BigDecimal.ROUND_HALF_UP)
                 .doubleValue();
         return truncatedDouble;
     }
 
-    public static String getFormattedTemperature(double metricValue) throws IllegalArgumentException {
-        if (WeatherLocation.unitsIn == null || !unitsIn.equals(UNITS_METRIC)) {
-            throw new IllegalArgumentException(
-                    String.format("%s mode not supported yet or not set. Please, set to %s only.",
-                            unitsIn, UNITS_METRIC));
-        }
-        return String.format("%s C", DECIMAL_FORMAT.format(metricValue));
-    }
 
-    public static String getFormattedSpeed(double metricValue) throws IllegalArgumentException {
-        if (WeatherLocation.unitsIn == null || !unitsIn.equals(UNITS_METRIC)) {
+    /**
+     * Returns a formatted string to display for the specified parameter.
+     *
+     * @param metricValue the value in metric units
+     * @param paramType   the parameter type.
+     * @param localized   a localized string to display
+     * @return
+     * @throws IllegalArgumentException thrown if not unit mode is not configured.
+     */
+    public String getFormattedString(double metricValue, String paramType, String localized) throws IllegalArgumentException {
+        if (WeatherLocation.unitsIn == null || !unitsIn.equals(Constants.UNITS_METRIC)) {
             throw new IllegalArgumentException(
                     String.format("%s mode not supported yet or not set. Please, set to %s only.",
-                            unitsIn, UNITS_METRIC));
+                            unitsIn, Constants.UNITS_METRIC));
         }
-        return String.format("%s km/h", DECIMAL_FORMAT.format(metricValue));
+        paramType = paramType.substring(paramType.lastIndexOf(":") + 1);
+        if (paramType.equals(PARAM_TEMP) || paramType.equals(PARAM_TEMP_MAX)
+                || paramType.equals(PARAM_TEMP_MIN)) {
+            final String DEGREE = "\u00b0";
+            return String.format("%s: %sC%s", localized,
+                    Constants.DECIMAL_FORMAT.format(metricValue),
+                    DEGREE);
+        } else if (paramType.equals(PARAM_WIND_SPEED)) {
+            return String.format(localized,
+                    Constants.DECIMAL_FORMAT.format(metricValue));
+        }
+        return String.format("%s km/h", Constants.DECIMAL_FORMAT.format(metricValue));
     }
 
     /**
@@ -225,6 +237,45 @@ public class WeatherLocation {
         return leafValue;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uuid);
+        dest.writeString(locationName);
+        dest.writeParcelable(coord, flags);
+        dest.writeDouble(temperature);
+        dest.writeDouble(minTemperature);
+        dest.writeDouble(maxTemperatue);
+        dest.writeDouble(pressure);
+        dest.writeDouble(humidity);
+        dest.writeDouble(windSpeed);
+        dest.writeString(weatherMain);
+        dest.writeString(weatherIcon);
+        dest.writeString(weatherDescription);
+    }
+
+    public static final Parcelable.Creator<WeatherLocation> CREATOR
+            = new Parcelable.Creator<WeatherLocation>() {
+
+        // This simply calls our new constructor (typically private) and
+        // passes along the unmarshalled `Parcel`, and then returns the new object!
+        @Override
+        public WeatherLocation createFromParcel(Parcel in) {
+            return new WeatherLocation(in);
+        }
+
+        // We just need to copy this and change the type to match our class.
+        @Override
+        public WeatherLocation[] newArray(int size) {
+            return new WeatherLocation[size];
+        }
+    };
+
     public static class Builder {
         int uuid;
         String locationName;
@@ -232,13 +283,16 @@ public class WeatherLocation {
         double temperature;
         double minTemperature;
         double maxTemperature;
+        public double pressure;
+
+        public double humidity;
+
         double windSpeed;
         String weatherMain;
         String weatherIcon;
         String weatherDescription;
 
         public Builder setUuid(int uuid) {
-
             this.uuid = uuid;
             return this;
         }
@@ -268,6 +322,16 @@ public class WeatherLocation {
             return this;
         }
 
+        public Builder setHumidity(double humidity) {
+            this.humidity = humidity;
+            return this;
+        }
+
+        public Builder setPressure(double pressure) {
+            this.pressure = pressure;
+            return this;
+        }
+
         public Builder setWindSpeed(double windSpeed) {
             this.windSpeed = windSpeed;
             return this;
@@ -288,26 +352,57 @@ public class WeatherLocation {
             return this;
         }
 
+        public Builder builder(Parcel in) {
+            uuid = in.readInt();
+            locationName = in.readString();
+            coord = in.readParcelable(WeatherLocation.class.getClassLoader());
+            temperature = in.readDouble();
+            minTemperature = in.readDouble();
+            maxTemperature = in.readDouble();
+            pressure = in.readDouble();
+            humidity = in.readDouble();
+            windSpeed = in.readDouble();
+            weatherMain = in.readString();
+            weatherIcon = in.readString();
+            weatherDescription = in.readString();
+            return this;
+        }
+
         public WeatherLocation buildFromJson(final String jsonString)
                 throws JSONException, NumberFormatException {
-            int uuid = Integer.parseInt(getJSonParamValueByParamPath(PARAM_ID, jsonString));
-            String placeName = getJSonParamValueByParamPath(PARAM_LOCATION_NAME, jsonString);
+            int uuid = Integer.parseInt(getJSonParamValueByParamPath(Constants.PARAM_ID, jsonString));
+            String placeName = getJSonParamValueByParamPath(Constants.PARAM_LOCATION_NAME, jsonString);
             double latitude = Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_LATITUDE, jsonString));
+                    getJSonParamValueByParamPath(Constants.PARAM_LATITUDE, jsonString));
             double longitude = Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_LONGITUDE, jsonString));
+                    getJSonParamValueByParamPath(Constants.PARAM_LONGITUDE, jsonString));
             LatLng coord = new LatLng(latitude, longitude);
-            double tempMain = getTemperature(Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_TEMP, jsonString)));
-            double tempMin = getTemperature(Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_TEMP_MIN, jsonString)));
-            double tempMax = getTemperature(Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_TEMP_MAX, jsonString)));
-            double windSpeed = Double.parseDouble(
-                    getJSonParamValueByParamPath(PARAM_WIND_SPEED, jsonString));
-            String weatherMain = getJSonParamValueByParamPath(PARAM_WEATHER_MAIN, jsonString);
-            String weatherDesc = getJSonParamValueByParamPath(PARAM_WEATHER_DESC, jsonString);
-            String weatherIcon = getJSonParamValueByParamPath(PARAM_WEATHER_ICON, jsonString);
+            double tempMain = getUnitsIn(
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_TEMP, jsonString))
+                    , PARAM_TEMP);
+            double tempMax = getUnitsIn(
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_TEMP_MAX, jsonString)),
+                    PARAM_TEMP_MAX);
+            double tempMin = getUnitsIn(
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_TEMP_MIN, jsonString)),
+                    PARAM_TEMP_MIN);
+            double pressure = getUnitsIn(
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_PRESSURE, jsonString)),
+                    PARAM_PRESSURE);
+            double humidity = getUnitsIn(
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_HUMIDITY, jsonString)),
+                    PARAM_HUMIDITY);
+            double windSpeed =
+                    Double.parseDouble(
+                            getJSonParamValueByParamPath(Constants.PARAM_WIND_SPEED, jsonString));
+            String weatherMain = getJSonParamValueByParamPath(Constants.PARAM_WEATHER_MAIN, jsonString);
+            String weatherDesc = getJSonParamValueByParamPath(Constants.PARAM_WEATHER_DESC, jsonString);
+            String weatherIcon = getJSonParamValueByParamPath(Constants.PARAM_WEATHER_ICON, jsonString);
 
             WeatherLocation weatherLocationResult = this.setUuid(uuid)
                     .setLocationName(placeName)
@@ -315,6 +410,8 @@ public class WeatherLocation {
                     .setTemperature(tempMain)
                     .setMinTemperature(tempMin)
                     .setMaxTemperature(tempMax)
+                    .setPressure(pressure)
+                    .setHumidity(humidity)
                     .setWindSpeed(windSpeed)
                     .setWeather(weatherMain)
                     .setWeatherDescription(weatherDesc)
@@ -327,4 +424,5 @@ public class WeatherLocation {
             return new WeatherLocation(this);
         }
     }
+
 }
