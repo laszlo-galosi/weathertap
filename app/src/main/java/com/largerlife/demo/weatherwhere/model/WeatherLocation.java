@@ -182,25 +182,25 @@ public class WeatherLocation implements Parcelable {
      * Returns a formatted string to display for the specified parameter.
      *
      * @param metricValue the value in metric units
-     * @param paramType   the parameter type.
+     * @param paramName   the parameter type.
      * @param localized   a localized string to display
      * @return
      * @throws IllegalArgumentException thrown if not unit mode is not configured.
      */
-    public String getFormattedString(double metricValue, String paramType, String localized) throws IllegalArgumentException {
+    public String getFormattedString(double metricValue, String paramName, String localized) throws IllegalArgumentException {
         if (WeatherLocation.unitsIn == null || !unitsIn.equals(Constants.UNITS_METRIC)) {
             throw new IllegalArgumentException(
                     String.format("%s mode not supported yet or not set. Please, set to %s only.",
                             unitsIn, Constants.UNITS_METRIC));
         }
-        paramType = paramType.substring(paramType.lastIndexOf(":") + 1);
-        if (paramType.equals(PARAM_TEMP) || paramType.equals(PARAM_TEMP_MAX)
-                || paramType.equals(PARAM_TEMP_MIN)) {
+        String paramType = paramName.substring(paramName.lastIndexOf(":") + 1);
+        if (paramName.equals(PARAM_TEMP) || paramName.equals(PARAM_TEMP_MAX)
+                || paramName.equals(PARAM_TEMP_MIN)) {
             final String DEGREE = "\u00b0";
             return String.format("%s: %sC%s", localized,
                     Constants.DECIMAL_FORMAT.format(metricValue),
                     DEGREE);
-        } else if (paramType.equals(PARAM_WIND_SPEED)) {
+        } else if (paramName.equals(PARAM_WIND_SPEED)) {
             return String.format(localized,
                     Constants.DECIMAL_FORMAT.format(metricValue));
         }
