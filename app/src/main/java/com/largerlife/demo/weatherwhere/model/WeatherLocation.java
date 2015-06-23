@@ -197,7 +197,7 @@ public class WeatherLocation implements Parcelable {
         if (paramName.equals(PARAM_TEMP) || paramName.equals(PARAM_TEMP_MAX)
                 || paramName.equals(PARAM_TEMP_MIN)) {
             final String DEGREE = "\u00b0";
-            return String.format("%s: %sC%s", localized,
+            return String.format("%s: %s C%s", localized,
                     Constants.DECIMAL_FORMAT.format(metricValue),
                     DEGREE);
         } else if (paramName.equals(PARAM_WIND_SPEED)) {
