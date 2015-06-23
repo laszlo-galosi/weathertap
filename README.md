@@ -31,6 +31,8 @@ Android 4.0 or greater (API level 14 Icecream Sandwich).
 
 Libraries used and highly recommended
 -------------------------------------
+- [Google Maps API v2](https://developers.google.com/maps/documentation/android/)
+- [Google Play Services v7](https://developers.google.com/android/guides/overview)
 - [Android Support Library v7.](http://developer.android.com/tools/support-library/index.html)
 - [Android Design Suppor Library](http://android-developers.blogspot.hu/2015/05/android-design-support-library.html) for the FAB and Snackar stuff.
 - [Espresso 2.0 and Android testing support lib](https://developer.android.com/training/testing/ui-testing/espresso-testing.html) for some basic instrumentation and UI testing.
