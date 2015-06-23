@@ -33,8 +33,8 @@ Libraries used and highly recommended
 -------------------------------------
 - [Android Support Library v7.](http://developer.android.com/tools/support-library/index.html)
 - [Android Design Suppor Library](http://android-developers.blogspot.hu/2015/05/android-design-support-library.html) for the FAB and Snackar stuff.
-- [Espresso 2.0 and Android testing support lib](https://developer.android.com/training/testing/ui-testing/espresso-testing.html) for some basic instrumentatio test.
-- [JUnit 4](junit.org) for some unit testing fun.
+- [Espresso 2.0 and Android testing support lib](https://developer.android.com/training/testing/ui-testing/espresso-testing.html) for some basic instrumentation and UI testing.
+- [JUnit 4](http://www.junit.org) for some unit testing fun.
 - [Genymotion Emulator](https://www.genymotion.com) for its lightning fast performance specially with Espresso testing.
 - [Butterknife](http://jakewharton.github.io/butterknife/) [Jake Wharton](https://github.com/JakeWharton)'s awesome view injection tool.
 - [A very easy Logging tool](https://github.com/zserge/log)
