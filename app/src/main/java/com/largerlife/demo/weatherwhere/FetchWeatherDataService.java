@@ -5,15 +5,9 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
-
 import com.largerlife.demo.weatherwhere.model.Constants;
 import com.largerlife.demo.weatherwhere.model.LocationComparator;
 import com.largerlife.demo.weatherwhere.model.WeatherLocation;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import trikita.log.Log;
 
 import static com.largerlife.demo.weatherwhere.model.Constants.BROADCAST_DATA_ACTION;
@@ -54,8 +50,6 @@ public class FetchWeatherDataService extends IntentService {
      * Retrieves the weather data converts to object model, and sorts the collection of
      * WeatherLocation objects to find the nearest from the center point passed in an extra
      * intent parameter.
-     *
-     * @param intent
      */
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -77,11 +71,19 @@ public class FetchWeatherDataService extends IntentService {
         Intent broadCastIntent = new Intent(BROADCAST_DATA_ACTION);
         try {
             Uri builtUri = Uri.parse(Constants.OPENWEATHER_BASE_URL).buildUpon()
-                    .appendQueryParameter(Constants.QUERY_PARAM_LATITUDE, Double.toString(latitude))
-                    .appendQueryParameter(Constants.QUERY_PARAM_LONGITUDE, Double.toString(longitude))
-                    .appendQueryParameter(Constants.QUERY_PARAM_COUNT, Integer.toString(count))
-                    .appendQueryParameter(Constants.QUERY_PARAM_UNITS, WeatherLocation.setUnitsIn(units))
-                    .build();
+                              .appendQueryParameter(Constants.QUERY_PARAM_LATITUDE,
+                                                    Double.toString(latitude))
+                              .appendQueryParameter(Constants.QUERY_PARAM_LONGITUDE,
+                                                    Double.toString(longitude))
+                              .appendQueryParameter(Constants.QUERY_PARAM_COUNT,
+                                                    Integer.toString(count))
+                              .appendQueryParameter(Constants.QUERY_PARAM_UNITS,
+                                                    WeatherLocation.setUnitsIn(units))
+                              .appendQueryParameter(Constants.QUERY_PARAM_APPID,
+                                                    this.getApplicationContext()
+                                                        .getString(
+                                                              R.string.open_weather_maps_apikey))
+                              .build();
 
             URL url = new URL(builtUri.toString());
             Log.d("Url ", builtUri.toString());
@@ -113,7 +115,7 @@ public class FetchWeatherDataService extends IntentService {
             //sending vroadcast about the error.
             broadCastIntent.putExtra(BROADCAST_EXTRA_ERROR, R.string.snack_error_fetch_data);
             LocalBroadcastManager.getInstance(getApplicationContext())
-                    .sendBroadcast(broadCastIntent);
+                                 .sendBroadcast(broadCastIntent);
             return;
         } finally {
             if (urlConnection != null) {
@@ -138,18 +140,17 @@ public class FetchWeatherDataService extends IntentService {
             Collections.sort(locations, new LocationComparator(tappedLocation));
             WeatherLocation nearest = locations.get(0);
 
-
             broadCastIntent.putExtra(BROADCAST_EXTRA_NEAREST, nearest);
             Log.d("Broadcasting data ", intent);
             LocalBroadcastManager.getInstance(getApplicationContext())
-                    .sendBroadcast(broadCastIntent);
+                                 .sendBroadcast(broadCastIntent);
         } catch (JSONException e) {
             Log.e("Error while parsing API response:", e.getMessage(), e);
         }
     }
 
     private static ArrayList<WeatherLocation> getWeatherLocationsFromJson(String weatherJsonStr)
-            throws JSONException {
+          throws JSONException {
         JSONObject jsonRawData = new JSONObject(weatherJsonStr);
         JSONArray jsonRawArray = jsonRawData.getJSONArray(Constants.PARAM_RESULT_LIST);
         ArrayList<WeatherLocation> locations = new ArrayList<>(jsonRawArray.length());

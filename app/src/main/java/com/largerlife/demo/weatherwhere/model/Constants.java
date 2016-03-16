@@ -1,7 +1,6 @@
 package com.largerlife.demo.weatherwhere.model;
 
 import com.google.android.gms.maps.model.LatLng;
-
 import java.text.DecimalFormat;
 
 /**
@@ -31,17 +30,15 @@ public class Constants {
      * limited by the 'cnt' parameter.
      */
     public static final String OPENWEATHER_BASE_URL =
-            "http://api.openweathermap.org/data/2.5/find?";
+          "http://api.openweathermap.org/data/2.5/find?";
 
     public static final String UNITS_METRIC = "metric";
-    static final String UNITS_IMPERIAL = "imperial";
-
     //OpenWeatherMap query related parameter constants.
     public static final String QUERY_PARAM_LATITUDE = "lat";
     public static final String QUERY_PARAM_LONGITUDE = "lon";
     public static final String QUERY_PARAM_COUNT = "cnt";
     public static final String QUERY_PARAM_UNITS = "units";
-
+    public static final String QUERY_PARAM_APPID = "APPID";
     //OpenWeatherMap JSON response related parameter constants.
     public static final String PARAM_RESULT_LIST = "list";
     public static final String PARAM_ID = "id";
@@ -53,14 +50,10 @@ public class Constants {
     public static final String PARAM_TEMP_MAX = "main:temp_max";
     public static final String PARAM_PRESSURE = "main:pressure";
     public static final String PARAM_HUMIDITY = "main:humidity";
-
     public static final String PARAM_WIND_SPEED = "wind:speed";
     public static final String PARAM_WEATHER_MAIN = "weather:main";
     public static final String PARAM_WEATHER_DESC = "weather:description";
     public static final String PARAM_WEATHER_ICON = "weather:icon";
-
-    static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-
     //Map related constants.
     public static final int CAMERA_ZOOM_DURATION = 500;
     public static final int CAMERA_MOVE_DURATION = 1000;
@@ -68,8 +61,7 @@ public class Constants {
     public static final int CAMERA_ANIMATION_INSTANT = 0;
     public static final int CAMERA_ANIMATION_MOVE = 1;
     public static final int CAMERA_ANIMATION_ZOOM = 2;
-
     public static final LatLng LAT_LNG_BUDAPEST = new LatLng(47.4812134, 19.1303031);
-
-
+    static final String UNITS_IMPERIAL = "imperial";
+    static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 }

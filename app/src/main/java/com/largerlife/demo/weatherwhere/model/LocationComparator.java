@@ -1,7 +1,6 @@
 package com.largerlife.demo.weatherwhere.model;
 
 import android.location.Location;
-
 import java.util.Comparator;
 
 /**
@@ -15,8 +14,6 @@ public class LocationComparator implements Comparator<WeatherLocation> {
      * {@link WeatherLocation} comparator based on the distance from the specified
      * center position.
      * {@link com.google.android.gms.maps.model.LatLng}
-     *
-     * @param center
      */
     public LocationComparator(Location center) {
         this.centerLocation = center;
@@ -35,12 +32,12 @@ public class LocationComparator implements Comparator<WeatherLocation> {
         Float distanceL = centerLocation.distanceTo(locLeft);
         Float distanceR = centerLocation.distanceTo(locRight);
 
-        if (distanceL.compareTo(distanceR) < 0)
+        if (distanceL.compareTo(distanceR) < 0) {
             return -1;
-        else if (distanceL.compareTo(distanceR) > 0)
+        } else if (distanceL.compareTo(distanceR) > 0) {
             return 1;
-        else
+        } else {
             return 0;
+        }
     }
-
 }
