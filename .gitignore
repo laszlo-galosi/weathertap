@@ -1,8 +1,8 @@
 ### Example user template
 # IntelliJ project files
-.idea/libraries/
-.idea/dictionaries/
-.idea/workspace.xml
+.idea/.name
+.idea/*
+.idea/runConfigurations/
 out
 gen
 
@@ -43,3 +43,4 @@ proguard/
 
 # Log Files
 *.log
+
