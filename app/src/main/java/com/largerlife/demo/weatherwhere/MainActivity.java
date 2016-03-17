@@ -1,17 +1,18 @@
 package com.largerlife.demo.weatherwhere;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.largerlife.demo.weatherwhere.model.Constants;
 import com.largerlife.demo.weatherwhere.model.WeatherLocation;
+import java.util.List;
 import trikita.log.Log;
 
 import static com.largerlife.demo.weatherwhere.model.Constants.BROADCAST_DATA_ACTION;
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     final static String TAG = "Weather Where App";
 
     @InjectView(R.id.mainLayout) CoordinatorLayout mCoordinatorLayout;
-    @InjectView(R.id.fab) FloatingActionButton mFabAction;
 
     private boolean mMapReady = false;
     private GoogleMap mMap;
@@ -81,13 +82,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         public void onReceive(Context context, Intent intent) {
             onNewIntent(intent);
-        }
-    };
-
-    private View.OnClickListener emptyClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //empty click listemer for dismissing snackbar
         }
     };
 
@@ -292,7 +286,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fetchIntent.putExtra(FETCH_EXTRA_UNITS, UNITS_METRIC);
         fetchIntent.putExtra(FETCH_EXTRA_COUNT, MAX_CLUSTER_COUNT);
         Log.d("startFetchDataService with ", fetchIntent);
-        startService(fetchIntent);
+        //we need an explicit intent since Android L
+        //see: https://commonsware.com/blog/2014/06/29/dealing-deprecations-bindservice.html
+        startService(convertToExplicitIntent(this, fetchIntent));
     }
 
     /**
@@ -386,15 +382,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void makeSnackBar(String message,
-          @StringRes int actionResId,
-          @ColorRes int actionColorResId,
-          int duration) {
-        @ColorInt int actionColor = getResources().getColor(actionColorResId);
+    /**
+     * Converts an implicit intent to an explicit intent, required since Android L.
+     * see : https://commonsware.com/blog/2014/06/29/dealing-deprecations-bindservice.html
+     *
+     * @param context the context
+     * @param implicitIntent implicit intent which to be converted.
+     * @return the explicit intent from the specified implicit intent.
+     */
+    public static Intent convertToExplicitIntent(final Context context,
+          final Intent implicitIntent) {
+        //Retrieve all services that can match the given intent
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
 
-        Snackbar.make(mCoordinatorLayout, message, duration)
-                .setAction(actionResId, emptyClickListener)
-                .setActionTextColor(actionColor)
-                .show();
+        //Make sure only one match was found
+        if (resolveInfo == null || resolveInfo.size() != 1) {
+            return null;
+        }
+
+        //Get component info and create ComponentName
+        final ResolveInfo serviceInfo = resolveInfo.get(0);
+        final String packageName = serviceInfo.serviceInfo.packageName;
+        final String className = serviceInfo.serviceInfo.name;
+        final ComponentName component = new ComponentName(packageName, className);
+
+        //Create a new intent. Use the old one for extras and such reuse
+        Intent explicitIntent = new Intent(implicitIntent);
+
+        //Set the component to be explicit
+        explicitIntent.setComponent(component);
+        return explicitIntent;
     }
 }
