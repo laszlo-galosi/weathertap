@@ -4,7 +4,7 @@ Weather Tap Demo App
 This Google Maps demo android app shows the current weather conditions at the tapped location using the [OpenWeatherMap](http://openweathermap.org) web API.
 Simply tap on the map to find the nearest place which has weater information. Tap on the FAB (floating action button in the bottom right corner) to jump to your current location.
 
-<img src="screenshot-main.png" height="480"/>
+<img src="screenshot_main.png" height="480"/>
 
 Sample API request
 ------------------
